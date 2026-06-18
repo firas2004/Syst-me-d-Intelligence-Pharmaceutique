@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>PHARMA-INTEL — Opalia Recordati</title>
+  <meta name="description"
+    content="Bienvenue sur PHARMA-INTEL v3.0 — Système d'Intelligence Pharmaceutique Opalia Recordati." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ══ Reset & Base ══════════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --red: #C0272D;
+      --red2: #8B1A1A;
+      --red-glow: rgba(192, 39, 45, 0.4);
+      --bg: #0D1117;
+      --bg2: #0F1520;
+      --text: #F0F6FC;
+      --text2: #A0A0A0;
+      --text3: #5C6370;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ══ Geometric Background ══════════════════════════════════════ */
+    .bg-geometry {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Deep diagonal gradient base */
+    .bg-geometry::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg,
+          #0D1117 0%,
+          #0F0F18 30%,
+          #120810 55%,
+          #1a0505 80%,
+          #0D1117 100%);
+    }
+
+    /* Diagonal stripe pattern — echoing the Opalia logo geometry */
+    .bg-geometry::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(-55deg,
+          transparent,
+          transparent 80px,
+          rgba(192, 39, 45, 0.018) 80px,
+          rgba(192, 39, 45, 0.018) 82px);
+      animation: bgDrift 30s linear infinite;
+    }
+
+    @keyframes bgDrift {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(82px);
+      }
+    }
+
+    /* Subtle vignette overlay */
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%,
+          transparent 40%,
+          rgba(13, 17, 23, 0.6) 100%);
+      pointer-events: none;
+    }
+
+    /* Glowing red orb — bottom left */
+    .bg-orb {
+      position: fixed;
+      bottom: -120px;
+      left: -80px;
+      width: 500px;
+      height: 500px;
+      z-index: 1;
+      background: radial-gradient(circle, rgba(192, 39, 45, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ══ Skip Link ═════════════════════════════════════════════════ */
+    .skip-link {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      z-index: 100;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text3);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease 2s forwards;
+    }
+
+    .skip-link:hover {
+      color: var(--text2);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .skip-link::after {
+      content: ' →';
+      color: var(--red);
+    }
+
+    /* ══ Main Splash Container ══════════════════════════════════════ */
+    .splash {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px 80px;
+      gap: 0;
+      text-align: center;
+    }
+
+    /* ══ Logo Block ═════════════════════════════════════════════════ */
+    .logo-wrap {
+      width: 220px;
+      height: auto;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeInDown 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+      filter: drop-shadow(0 0 24px rgba(192, 39, 45, 0.25));
+    }
+
+    /* PDF logo via object tag — rendered at 220px */
+    .logo-wrap object,
+    .logo-wrap img {
+      width: 220px;
+      height: auto;
+      display: block;
+    }
+
+    /* ══ Red Divider Line ══════════════════════════════════════════ */
+    .red-line {
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      border-radius: 1px;
+      margin-bottom: 32px;
+      box-shadow: 0 0 12px var(--red-glow);
+      animation: expandWidth 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
+    }
+
+    /* ══ App Name ══════════════════════════════════════════════════ */
+    .app-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.18em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 0.5s forwards;
+    }
+
+    .app-name span {
+      color: var(--red);
+    }
+
+    .app-version {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--red);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 0.6s forwards;
+    }
+
+    /* ══ Slogan ════════════════════════════════════════════════════ */
+    .slogan {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text2);
+      letter-spacing: 0.02em;
+      line-height: 1.6;
+      max-width: 480px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 0.9s forwards;
+    }
+
+    .slogan .slogan-fr {
+      display: block;
+    }
+
+    .slogan .slogan-en {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    /* ══ CTA Button ════════════════════════════════════════════════ */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--red);
+      color: #FFFFFF;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 36px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: box-shadow 0.25s, transform 0.2s, background 0.2s;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 1.3s forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transition: left 0.5s;
+    }
+
+    .cta-btn:hover::before {
+      left: 100%;
+    }
+
+    .cta-btn:hover {
+      box-shadow: 0 0 28px var(--red-glow), 0 4px 16px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+      background: #d42d33;
+    }
+
+    .cta-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 0 12px var(--red-glow);
+    }
+
+    .cta-arrow {
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .cta-btn:hover .cta-arrow {
+      transform: translateX(4px);
+    }
+
+    /* ══ Copyright ═════════════════════════════════════════════════ */
+    .copyright {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      font-size: 11px;
+      color: var(--text3);
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      opacity: 0;
+      animation: fadeIn 0.5s ease 1.8s forwards;
+    }
+
+    /* ══ Keyframes ═════════════════════════════════════════════════ */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-28px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes expandWidth {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: 140px;
+      }
+    }
+
+    /* ══ Decorative corner lines ══════════════════════════════════ */
+    .corner {
+      position: fixed;
+      z-index: 5;
+      opacity: 0.2;
+    }
+
+    .corner-tl {
+      top: 20px;
+      left: 20px;
+      width: 32px;
+      height: 32px;
+      border-top: 2px solid var(--red);
+      border-left: 2px solid var(--red);
+    }
+
+    .corner-br {
+      bottom: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      border-bottom: 2px solid var(--red);
+      border-right: 2px solid var(--red);
+    }
+
+    /* ══ Responsive ═══════════════════════════════════════════════ */
+    @media (max-width: 480px) {
+      .logo-wrap {
+        width: 180px;
+      }
+
+      .logo-wrap object,
+      .logo-wrap img {
+        width: 180px;
+      }
+
+      .app-name {
+        font-size: 1.4rem;
+      }
+
+      .slogan {
+        font-size: 0.95rem;
+      }
+
+      .cta-btn {
+        padding: 12px 28px;
+        font-size: 0.82rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background layers -->
+  <div class="bg-geometry" aria-hidden="true"></div>
+  <div class="bg-vignette" aria-hidden="true"></div>
+  <div class="bg-orb" aria-hidden="true"></div>
+
+  <!-- Decorative corners -->
+  <div class="corner corner-tl" aria-hidden="true"></div>
+  <div class="corner corner-br" aria-hidden="true"></div>
+
+  <!-- Skip link -->
+  <button class="skip-link" id="skip-btn" aria-label="Passer l'écran d'accueil">Passer</button>
+
+  <!-- ══ Splash Content ═══════════════════════════════════════════ -->
+  <main class="splash">
+
+    <!-- Logo — Opalia Recordati custom SVG -->
+    <div class="logo-wrap" role="img" aria-label="Logo Opalia Recordati">
+      <img src="assets/recordati-logo.svg" alt="Opalia Recordati" />
+    </div>
+
+    <!-- Red separator line -->
+    <div class="red-line" aria-hidden="true"></div>
+
+    <!-- App name -->
+    <h1 class="app-name">PHARMA&#8209;<span>INTEL</span></h1>
+    <div class="app-version"> &nbsp; &nbsp; Opalia Recordati</div>
+
+    <!-- Bilingual slogan (language-aware) -->
+    <p class="slogan" id="slogan-text">
+      <span class="slogan-fr" id="slogan-fr">« L'intelligence au service de la molécule. »</span>
+      <span class="slogan-en" id="slogan-en" style="display:none">"Intelligence driven by the molecule."</span>
+    </p>
+
+    <!-- CTA button -->
+    <a href="app.html" class="cta-btn" id="cta-btn" role="button">
+      <span id="cta-label">Accéder à la plateforme</span>
+      <span class="cta-arrow">→</span>
+    </a>
+
+  </main>
+
+  <!-- Copyright -->
+  <p class="copyright" id="copyright">
+    © 2026 Opalia Recordati &nbsp;—&nbsp; Tous droits réservés
+  </p>
+
+
+
+  <script>
+    (function () {
+      // ── Language detection ────────────────────────────────────
+      const lang = localStorage.getItem('pharma_lang') || 'fr';
+      const isEN = lang === 'en';
+
+      if (isEN) {
+        document.documentElement.lang = 'en';
+        document.getElementById('slogan-fr').style.display = 'none';
+        document.getElementById('slogan-en').style.display = 'block';
+        document.getElementById('cta-label').textContent = 'Access Platform';
+        document.getElementById('copyright').textContent =
+          '© 2025 Opalia Recordati — All rights reserved';
+        document.getElementById('skip-btn').textContent = 'Skip';
+      }
+
+      // ── Navigate to app (smooth fade-out) ────────────────────
+      function go() {
+        document.body.style.transition = 'opacity 0.4s ease';
+        document.body.style.opacity = '0';
+        setTimeout(() => { window.location.href = 'app.html'; }, 400);
+      }
+
+      // CTA click — user controls when to enter
+      document.getElementById('cta-btn').addEventListener('click', function (e) {
+        e.preventDefault();
+        go();
+      });
+
+      // Skip link click
+      document.getElementById('skip-btn').addEventListener('click', function () {
+        go();
+      });
+    })();
+  </script>
+
+</body>
+
+</html>

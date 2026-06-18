@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>PHARMA-INTEL — Opalia Recordati</title>
+  <meta name="description"
+    content="Système d'intelligence pharmaceutique avancé pour Recordati — analyse moléculaire, stabilité ICH, rapports multi-départements." />
+  <link rel="stylesheet" href="css/pharma.css" />
+  <!-- CDN Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ══ AUTH MODAL ══════════════════════════════════════════════ -->
+  <div id="auth-modal">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <img src="assets/recordati-logo.svg" alt="Recordati" />
+      </div>
+      <h2 data-i18n="auth.title">Accès Sécurisé GMP</h2>
+      <p style="font-size:11px;color:var(--text3);margin-top:-18px;margin-bottom:18px">OPALIA RECORDATI GROUP</p>
+      <label data-i18n="auth.department">Département</label>
+      <select id="auth-dept">
+        <option value="" data-i18n="auth.select">— Sélectionner —</option>
+      </select>
+      <label data-i18n="auth.password">Mot de passe</label>
+      <input id="auth-pass" type="password" autocomplete="off" />
+      <div id="auth-error" class="auth-error"></div>
+      <button id="auth-btn" class="btn btn-primary btn-full" data-i18n="auth.login">Se connecter</button>
+      <p style="text-align:center;font-size:10px;color:var(--text3);margin-top:8px">Opalia Recordati Group © 2026<br>
+        Mots de passe: rd2026 | log2026 | reg2026 | qual2026 | prod2026 | fin2026 | admin2026
+      </p>
+    </div>
+  </div>
+
+  <!-- ══ APP SHELL ═══════════════════════════════════════════════ -->
+  <div id="app-shell" style="display:none">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="assets/recordati-logo.svg" alt="Recordati" />
+
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">📊</span><span data-i18n="nav.dashboard">Tableau de Bord</span>
+        </div>
+        <div class="nav-item" data-page="search">
+          <span class="nav-icon">🔍</span><span data-i18n="nav.search">Recherche</span>
+        </div>
+        <div class="nav-item" data-page="database">
+          <span class="nav-icon">🗄️</span><span data-i18n="nav.database">Base de Données</span>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-item" data-page="reports">
+          <span class="nav-icon">📋</span><span data-i18n="nav.reports">Rapports</span>
+        </div>
+        <div class="nav-item" data-page="reports-rd" style="padding-left:24px">
+          <span class="nav-icon">🧬</span><span data-i18n="dept.rd">R&D</span>
+        </div>
+        <div class="nav-item" data-page="reports-logistique" style="padding-left:24px">
+          <span class="nav-icon">🚚</span><span data-i18n="dept.logistique">Logistique</span>
+        </div>
+        <div class="nav-item" data-page="reports-reglementaire" style="padding-left:24px">
+          <span class="nav-icon">📜</span><span data-i18n="dept.reglementaire">Réglementaire</span>
+        </div>
+        <div class="nav-item" data-page="reports-qualite" style="padding-left:24px">
+          <span class="nav-icon">✅</span><span data-i18n="dept.qualite">Qualité</span>
+        </div>
+        <div class="nav-item" data-page="reports-production" style="padding-left:24px">
+          <span class="nav-icon">⚙️</span><span data-i18n="dept.production">Production</span>
+        </div>
+        <div class="nav-item" data-page="reports-finance" style="padding-left:24px">
+          <span class="nav-icon">💰</span><span data-i18n="dept.finance">Finance</span>
+        </div>
+        <div class="nav-divider"></div>
+        <!-- v3.0 — Collecte & Base de données réelle -->
+        <div class="nav-item" data-page="collector"
+          style="background:rgba(0,212,255,.06);border-left:2px solid var(--teal)">
+          <span class="nav-icon">🚀</span><span>Collecte Auto.</span>
+        </div>
+        <div class="nav-item" data-page="explorer">
+          <span class="nav-icon">🔭</span><span>Explorateur DB</span>
+        </div>
+        <div class="nav-item" data-page="global-dash">
+          <span class="nav-icon">🌐</span><span>Stats Globales</span>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-item" data-page="ai">
+          <span class="nav-icon">🤖</span><span data-i18n="nav.ai">Intelligence IA</span>
+        </div>
+        <div class="nav-item" data-page="assistant">
+          <span class="nav-icon">💬</span><span data-i18n="nav.assistant">Assistant IA</span>
+        </div>
+        <div class="nav-item" data-page="exports">
+          <span class="nav-icon">📥</span><span data-i18n="nav.exports">Exports</span>
+        </div>
+        <div class="nav-item" data-page="audit">
+          <span class="nav-icon">🔒</span><span data-i18n="nav.audit">Audit Trail</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div id="user-badge"></div>
+        <button id="logout-btn" class="btn btn-secondary btn-sm btn-full" data-i18n="auth.logout">Déconnexion</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="topbar-title" data-i18n="app.subtitle">Système d'Intelligence Pharmaceutique</div>
+        <div id="drug-a-badge" class="drug-badge" data-i18n="common.drug_a">Drug A</div>
+        <div id="drug-b-badge" class="drug-badge" data-i18n="common.drug_b">Drug B</div>
+        <span class="gmp-badge" data-i18n="app.gmp">Conforme GMP</span>
+        <button id="lang-toggle">EN</button>
+      </div>
+
+      <div class="content">
+
+        <!-- ── DASHBOARD ── -->
+        <div id="page-dashboard" class="page" style="display:flex">
+          <div class="page-header">
+            <h1 data-i18n="nav.dashboard">Tableau de Bord</h1>
+          </div>
+          <div id="dashboard-placeholder">
+            <div class="ph-icon">⚗️</div>
+            <p data-i18n="dash.no_data">Chargez une molécule pour afficher le tableau de bord</p>
+            <button class="btn btn-primary" data-page="search">🔍 Rechercher une molécule</button>
+          </div>
+          <div id="dashboard-content" style="display:none">
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-label" data-i18n="dash.kpi_shelf">Durée de Vie</div>
+                <div class="kpi-value" id="kpi-shelf-value">—</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label" data-i18n="dash.kpi_risk">Risque Dégradation</div>
+                <div class="kpi-value" id="kpi-risk-value">—</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label" data-i18n="dash.kpi_sources">Sources Citées</div>
+                <div class="kpi-value" id="kpi-sources-value">—</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label" data-i18n="dash.kpi_version">Version DB</div>
+                <div class="kpi-value" id="kpi-version-value">—</div>
+              </div>
+            </div>
+            <div style="margin-bottom:8px;font-size:12px;color:var(--text3)">
+              Drug A: <strong id="kpi-drug-a" style="color:var(--teal)">—</strong> &nbsp;|&nbsp;
+              Drug B: <strong id="kpi-drug-b" style="color:var(--text2)">—</strong>
+            </div>
+            <div class="charts-grid">
+              <div class="chart-card">
+                <div class="chart-title" data-i18n="dash.heatmap">Heatmap Stabilité</div>
+                <div class="chart-wrap"><canvas id="chart-heatmap"></canvas></div>
+              </div>
+              <div class="chart-card">
+                <div class="chart-title" data-i18n="dash.degradation">Dégradation par Stress</div>
+                <div class="chart-wrap"><canvas id="chart-degradation"></canvas></div>
+              </div>
+              <div class="chart-card">
+                <div class="chart-title" data-i18n="dash.aging">Timeline Vieillissement T0→T24</div>
+                <div class="chart-wrap"><canvas id="chart-aging"></canvas></div>
+              </div>
+              <div class="chart-card">
+                <div class="chart-title" data-i18n="dash.risk">Matrice de Risque</div>
+                <div class="chart-wrap"><canvas id="chart-risk"></canvas></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SEARCH ── -->
+        <div id="page-search" class="page">
+          <div class="page-header">
+            <h1 data-i18n="search.title">Recherche de Molécule</h1>
+          </div>
+          <div class="card-grid">
+            <div class="card">
+              <h3 data-i18n="search.drug_a">Drug A (Référence)</h3>
+              <div class="search-box">
+                <input id="search-a-input" class="search-input" type="text" data-i18n-ph="search.placeholder"
+                  placeholder="Nom du médicament..." />
+                <button id="search-a-btn" class="btn btn-primary" data-i18n="search.btn">Rechercher PubChem</button>
+              </div>
+              <div id="search-a-status" class="search-status"></div>
+              <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+                <img id="struct-img-a" class="struct-img" alt="Structure Drug A" />
+              </div>
+            </div>
+            <div class="card">
+              <h3 data-i18n="search.drug_b">Drug B (Candidat)</h3>
+              <div class="search-box">
+                <input id="search-b-input" class="search-input" type="text" data-i18n-ph="search.placeholder"
+                  placeholder="Nom du médicament..." />
+                <button id="search-b-btn" class="btn btn-secondary" data-i18n="search.btn">Rechercher PubChem</button>
+              </div>
+              <div id="search-b-status" class="search-status"></div>
+              <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+                <img id="struct-img-b" class="struct-img" alt="Structure Drug B" />
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>💡 Sources utilisées</h3>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Niveau</th>
+                  <th>Source</th>
+                  <th>Données</th>
+                  <th>Fiabilité</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Niveau 1</td>
+                  <td>PubChem (NIH)</td>
+                  <td>Données moléculaires (TABLE 1)</td>
+                  <td class="val-ok">95%</td>
+                </tr>
+                <tr>
+                  <td>Niveau 1</td>
+                  <td>ICH Q1A / Q1B / Q1E</td>
+                  <td>Guidelines stabilité (TABLES 2-4)</td>
+                  <td class="val-ok">95%</td>
+                </tr>
+                <tr>
+                  <td>Niveau 2</td>
+                  <td>Extrapolation classe thérapeutique</td>
+                  <td>Stabilité, Dégradation (TABLES 2-3)</td>
+                  <td class="val-warn">70% ⚠ SIMULÉ</td>
+                </tr>
+                <tr>
+                  <td>Niveau 3</td>
+                  <td>Handbook of Excipients</td>
+                  <td>Compatibilité (TABLE 7)</td>
+                  <td class="val-warn">68% ⚠ SIMULÉ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── DATABASE ── -->
+        <div id="page-database" class="page">
+          <div class="page-header">
+            <h1 data-i18n="nav.database">Base de Données</h1>
+          </div>
+          <div class="db-tabs">
+            <button class="db-tab active" data-table="T1">T1 — Molécules</button>
+            <button class="db-tab" data-table="T2">T2 — Stabilité</button>
+            <button class="db-tab" data-table="T3">T3 — Dégradation</button>
+            <button class="db-tab" data-table="T4">T4 — Vieillissement</button>
+            <button class="db-tab" data-table="T5">T5 — Synthèse</button>
+            <button class="db-tab" data-table="T6">T6 — Réglementaire</button>
+            <button class="db-tab" data-table="T7">T7 — Excipients</button>
+          </div>
+          <div id="db-content" class="card"></div>
+        </div>
+
+        <!-- ── REPORTS NAV ── -->
+        <div id="page-reports" class="page">
+          <div class="page-header">
+            <h1 data-i18n="nav.reports">Rapports</h1>
+          </div>
+          <div class="report-nav-grid">
+            <div class="report-nav-card" id="open-report-rd">
+              <div class="rn-icon">🧬</div>
+              <h3 data-i18n="rep.rd_title">Rapport R&D</h3>
+              <p>Profil moléculaire, synthèse, scorecard</p>
+            </div>
+            <div class="report-nav-card" id="open-report-logistique">
+              <div class="rn-icon">🚚</div>
+              <h3 data-i18n="rep.log_title">Rapport Logistique</h3>
+              <p>Stockage, transport, ERP/SAP</p>
+            </div>
+            <div class="report-nav-card" id="open-report-reglementaire">
+              <div class="rn-icon">📜</div>
+              <h3 data-i18n="rep.reg_title">Rapport Réglementaire</h3>
+              <p>ICH, CTD Module 3, pays</p>
+            </div>
+            <div class="report-nav-card" id="open-report-qualite">
+              <div class="rn-icon">✅</div>
+              <h3 data-i18n="rep.qual_title">Rapport Qualité</h3>
+              <p>Méthodes, critères OOS, vieillissement</p>
+            </div>
+            <div class="report-nav-card" id="open-report-production">
+              <div class="rn-icon">⚙️</div>
+              <h3 data-i18n="rep.prod_title">Rapport Production</h3>
+              <p>CPP, excipients, fabrication</p>
+            </div>
+            <div class="report-nav-card" id="open-report-finance">
+              <div class="rn-icon">💰</div>
+              <h3 data-i18n="rep.fin_title">Rapport Finance</h3>
+              <p>Coûts, fournisseurs GMP, ROI</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DEPT REPORT PAGES ── -->
+        <div id="page-reports-rd" class="page">
+          <div class="page-header">
+            <h1 data-i18n="rep.rd_title">Rapport R&D</h1>
+            <button class="btn btn-secondary btn-sm" data-page="reports">← Retour</button>
+          </div>
+          <div class="report-content"></div>
+        </div>
+        <div id="page-reports-logistique" class="page">
+          <div class="page-header">
+            <h1 data-i18n="rep.log_title">Rapport Logistique</h1>
+            <button class="btn btn-secondary btn-sm" data-page="reports">← Retour</button>
+          </div>
+          <div class="report-content"></div>
+        </div>
+        <div id="page-reports-reglementaire" class="page">
+          <div class="page-header">
+            <h1 data-i18n="rep.reg_title">Rapport Réglementaire</h1>
+            <button class="btn btn-secondary btn-sm" data-page="reports">← Retour</button>
+          </div>
+          <div class="report-content"></div>
+        </div>
+        <div id="page-reports-qualite" class="page">
+          <div class="page-header">
+            <h1 data-i18n="rep.qual_title">Rapport Qualité</h1>
+            <button class="btn btn-secondary btn-sm" data-page="reports">← Retour</button>
+          </div>
+          <div class="report-content"></div>
+        </div>
+        <div id="page-reports-production" class="page">
+          <div class="page-header">
+            <h1 data-i18n="rep.prod_title">Rapport Production</h1>
+            <button class="btn btn-secondary btn-sm" data-page="reports">← Retour</button>
+          </div>
+          <div class="report-content"></div>
+        </div>
+        <div id="page-reports-finance" class="page">
+          <div class="page-header">
+            <h1 data-i18n="rep.fin_title">Rapport Finance</h1>
+            <button class="btn btn-secondary btn-sm" data-page="reports">← Retour</button>
+          </div>
+          <div class="report-content"></div>
+        </div>
+
+        <!-- ── AI INTELLIGENCE ── -->
+        <div id="page-ai" class="page">
+          <div class="page-header">
+            <h1 data-i18n="nav.ai">Intelligence IA</h1>
+          </div>
+          <!-- Prediction -->
+          <div class="card">
+            <h3 data-i18n="ai.prediction">Prédiction de Dégradation IA</h3>
+            <div class="pred-inputs">
+              <div class="pred-field">
+                <label data-i18n="ai.temperature">Température (°C)</label>
+                <input id="pred-temp" type="number" value="40" min="25" max="70" />
+              </div>
+              <div class="pred-field">
+                <label data-i18n="ai.humidity">Humidité (%RH)</label>
+                <input id="pred-rh" type="number" value="75" min="40" max="95" />
+              </div>
+              <div class="pred-field">
+                <label data-i18n="ai.duration">Durée (mois)</label>
+                <input id="pred-months" type="number" value="18" min="1" max="36" />
+              </div>
+              <button id="run-prediction-btn" class="btn btn-primary" data-i18n="ai.run_prediction">Lancer la
+                Prédiction</button>
+            </div>
+            <div id="prediction-result"></div>
+          </div>
+          <!-- Comparator -->
+          <div class="card">
+            <h3 data-i18n="ai.comparator">Comparateur Drug A vs B</h3>
+            <div id="ai-comparator-result"></div>
+          </div>
+          <!-- Conflicts -->
+          <div class="card">
+            <h3 data-i18n="ai.conflicts">Conflits Détectés</h3>
+            <div id="ai-conflicts-result"></div>
+          </div>
+          <!-- Alerts -->
+          <div class="card">
+            <h3 data-i18n="ai.alerts">Alertes Temps Réel (EMA / FDA / PubMed)</h3>
+            <div id="ai-alerts-result"></div>
+          </div>
+        </div>
+
+        <!-- ── ASSISTANT ── -->
+        <div id="page-assistant" class="page">
+          <div class="page-header">
+            <h1 data-i18n="assistant.title">Assistant Pharmaceutique IA</h1>
+            <div class="actions">
+              <button id="config-api-btn" class="btn btn-secondary btn-sm" data-i18n="assistant.config_api">Configurer
+                Clé API</button>
+            </div>
+          </div>
+          <div id="api-config-panel">
+            <label data-i18n="assistant.api_label">Clé API (OpenAI sk-... ou Gemini AIza...)</label>
+            <input id="api-key-input" type="password" placeholder="sk-... ou AIza..." />
+            <button id="save-api-key-btn" class="btn btn-primary btn-sm"
+              data-i18n="assistant.save_key">Enregistrer</button>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;flex:1;display:flex;flex-direction:column">
+            <div id="chat-messages" class="chat-messages">
+              <div class="chat-msg chat-system">
+                <div class="chat-bubble">
+                  🧪 PHARMA-INTEL Assistant — Connecté à vos 7 tables de données moléculaires.<br>
+                  Posez une question sur la molécule chargée (stabilité, dégradation, ICH, synthèse...)
+                </div>
+              </div>
+            </div>
+            <div class="chat-input-row">
+              <textarea id="chat-input" class="chat-input" rows="2" data-i18n-ph="assistant.placeholder"
+                placeholder="Question sur la molécule chargée..."></textarea>
+              <button id="chat-send-btn" class="btn btn-primary" data-i18n="assistant.send">Envoyer</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── EXPORTS ── -->
+        <div id="page-exports" class="page">
+          <div class="page-header">
+            <h1 data-i18n="nav.exports">Exports</h1>
+          </div>
+          <div class="export-cards">
+            <div class="export-card">
+              <div class="export-icon">📊</div>
+              <h3 data-i18n="export.excel">Exporter Excel (14 onglets)</h3>
+              <p>7 tables DB + 6 rapports départements + Audit Trail. Format .xlsx compatible SAP/ERP.</p>
+              <button id="export-excel-btn" class="btn btn-primary" data-i18n="export.excel">Exporter Excel</button>
+            </div>
+            <div class="export-card">
+              <div class="export-icon">📄</div>
+              <h3 data-i18n="export.pdf">Exporter PDF Recordati</h3>
+              <p>Rapport branded Recordati avec en-tête, courbes stabilité, ICH checklist, audit trail.</p>
+              <button id="export-pdf-btn" class="btn btn-secondary" data-i18n="export.pdf">Exporter PDF</button>
+            </div>
+            <div class="export-card">
+              <div class="export-icon">📦</div>
+              <h3 data-i18n="export.both">Excel + PDF simultané</h3>
+              <p>Génère les deux formats en même temps. Tous les départements reçoivent leur version.</p>
+              <button id="export-both-btn" class="btn btn-primary" data-i18n="export.both">Exporter les deux</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:20px">
+            <h3>ℹ️ Note sur les données exportées</h3>
+            <p style="font-size:12px;color:var(--warn);line-height:1.7">
+              ⚠ Les données marquées <strong>[DONNÉES SIMULÉES]</strong> dans les tables 2 à 7 sont générées
+              par extrapolation de classe thérapeutique. Elles sont exportées avec un flag explicite dans chaque
+              onglet Excel et section PDF. <strong>Une vérification manuelle est obligatoire avant tout usage
+                réglementaire.</strong>
+              Seules les données TABLE 1 issues de PubChem (NIH) sont vérifiées (fiabilité 95%).
+            </p>
+          </div>
+        </div>
+
+        <!-- ── AUDIT TRAIL ── -->
+        <div id="page-audit" class="page">
+          <div class="page-header">
+            <h1 data-i18n="audit.title">Audit Trail GMP</h1>
+            <button id="audit-clear-btn" class="btn btn-danger btn-sm" data-i18n="audit.clear">Effacer</button>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden">
+            <div style="overflow-x:auto">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="audit.timestamp">Horodatage</th>
+                    <th data-i18n="audit.dept">Département</th>
+                    <th data-i18n="audit.user">Utilisateur</th>
+                    <th data-i18n="audit.action">Action</th>
+                    <th data-i18n="audit.result">Résultat</th>
+                    <th data-i18n="audit.session">Session ID</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-tbody">
+                  <tr>
+                    <td colspan="6" class="no-data">Aucune entrée</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── v3.0 COLLECTOR ── -->
+        <div id="page-collector" class="page"></div>
+
+        <!-- ── v3.0 EXPLORER ── -->
+        <div id="page-explorer" class="page"></div>
+
+        <!-- ── v3.0 GLOBAL DASHBOARD ── -->
+        <div id="page-global-dash" class="page"></div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /app-shell -->
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+
+</html>

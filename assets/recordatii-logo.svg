@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <!-- Geometric red icon - overlapping parallelograms like Opalia logo -->
+  <g transform="translate(4, 8)">
+    <!-- Back shape (darker red) -->
+    <polygon points="18,4 32,4 22,36 8,36" fill="#8B0000" opacity="0.85"/>
+    <!-- Front shape (bright red) -->
+    <polygon points="10,10 26,10 34,42 18,42" fill="#CC1111"/>
+    <!-- Highlight stripe -->
+    <polygon points="14,10 20,10 28,42 22,42" fill="#E82020" opacity="0.6"/>
+  </g>
+  <!-- OPALIA text -->
+  <text x="44" y="28" font-family="Arial, sans-serif" font-weight="800" font-size="15" fill="#FFFFFF" letter-spacing="1.5">OPALIA</text>
+  <!-- RECORDATI text -->
+  <text x="44" y="43" font-family="Arial, sans-serif" font-weight="700" font-size="11" fill="#CC1111" letter-spacing="2">RECORDATI</text>
+  <!-- GROUP text -->
+  <text x="44" y="54" font-family="Arial, sans-serif" font-weight="400" font-size="7" fill="#888888" letter-spacing="3">G R O U P</text>
+</svg>
