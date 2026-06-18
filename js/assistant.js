@@ -10,7 +10,12 @@ const API_PROVIDER_STORAGE = 'pharma_ai_provider';
 
 export function saveApiKey(key) {
   // Basic detection of provider from key prefix
-  const provider = key.startsWith('AIza') ? 'gemini' : 'openai';
+  let provider = 'openai';
+  if (key.startsWith('AIza')) {
+    provider = 'gemini';
+  } else if (key.startsWith('gsk_')) {
+    provider = 'groq';
+  }
   localStorage.setItem(API_KEY_STORAGE, key);
   localStorage.setItem(API_PROVIDER_STORAGE, provider);
   return provider;
@@ -106,6 +111,8 @@ ${dbContext}`;
   let response;
   if (provider === 'gemini') {
     response = await callGemini(apiKey, systemPrompt, userMessage);
+  } else if (provider === 'groq') {
+    response = await callGroq(apiKey, systemPrompt, userMessage);
   } else {
     response = await callOpenAI(apiKey, systemPrompt, userMessage);
   }
@@ -162,4 +169,26 @@ async function callGemini(apiKey, systemPrompt, userMessage) {
   }
   const data = await res.json();
   return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? 'No response';
+}
+
+async function callGroq(apiKey, systemPrompt, userMessage) {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage }
+      ],
+      max_tokens: 1000,
+      temperature: 0.3
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message ?? `Groq error: ${res.status}`);
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content ?? 'No response';
 }
